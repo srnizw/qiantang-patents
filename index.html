@@ -351,16 +351,21 @@ let filteredPatents = [];
 let currentCat = 'all';
 let currentSearch = '';
 let displayCount = 0;
+let abstractsReady = false;
 
 const catColors = { '车': '#e53e3e', '药': '#38a169', '芯': '#805ad5', '化': '#dd6b20', '智': '#3182ce' };
 const catNames = ['车', '药', '芯', '化', '智'];
 
 // ---- Load data (async with file:// fallback) ----
 function init(data) {
+  // Tag each patent with its index for abstract lookup
+  for (var i = 0; i < data.length; i++) { data[i]._idx = i; }
   allPatents = data;
   buildStats();
   applyFilters();
   document.getElementById('loading').style.display = 'none';
+  // Start loading abstracts in background
+  loadAbstracts();
 }
 
 function showLoadError(msg) {
@@ -370,9 +375,7 @@ function showLoadError(msg) {
 }
 
 function loadDataAsync() {
-  var loadingEl = document.getElementById('loading');
-
-  // Try fetch first (works over HTTP, shows the loading spinner while downloading)
+  // Try fetch first (works over HTTP, non-blocking)
   fetch('patents.json')
     .then(function(res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -380,7 +383,6 @@ function loadDataAsync() {
     })
     .then(function(data) { init(data); })
     .catch(function() {
-      // fetch failed — try window.PATENT_DATA if already set by a prior script load
       if (window.PATENT_DATA && window.PATENT_DATA.length) {
         init(window.PATENT_DATA);
         return;
@@ -402,7 +404,51 @@ function loadDataAsync() {
     });
 }
 
-// Check if patents.js was preloaded (e.g. via script tag or file://)
+// ---- Lazy-load abstracts ----
+function loadAbstracts() {
+  if (window.PATENT_ABSTRACTS && window.PATENT_ABSTRACTS.length) {
+    mergeAbstracts(window.PATENT_ABSTRACTS);
+    return;
+  }
+  fetch('patent_abstracts.json')
+    .then(function(res) { return res.json(); })
+    .then(function(data) { mergeAbstracts(data); })
+    .catch(function() {
+      // file:// fallback
+      var s = document.createElement('script');
+      s.src = 'patent_abstracts.js';
+      s.onload = function() {
+        if (window.PATENT_ABSTRACTS && window.PATENT_ABSTRACTS.length) {
+          mergeAbstracts(window.PATENT_ABSTRACTS);
+        }
+      };
+      document.head.appendChild(s);
+    });
+}
+
+function mergeAbstracts(abstracts) {
+  abstractsReady = true;
+  for (var i = 0; i < abstracts.length; i++) {
+    if (i < allPatents.length) {
+      allPatents[i].a = abstracts[i];
+    }
+  }
+  // Update abstracts in already-rendered cards
+  var cards = document.querySelectorAll('.patent-card');
+  for (var j = 0; j < cards.length; j++) {
+    var idx = parseInt(cards[j].getAttribute('data-idx'));
+    if (!isNaN(idx) && idx < abstracts.length) {
+      var absEl = cards[j].querySelector('.patent-abstract');
+      if (abstracts[idx]) {
+        absEl.innerHTML = '<p>' + escapeHtml(abstracts[idx]) + '</p>';
+      } else {
+        absEl.innerHTML = '<p class="no-abstract">暂无摘要</p>';
+      }
+    }
+  }
+}
+
+// Check if patents.js was preloaded
 if (window.PATENT_DATA && window.PATENT_DATA.length) {
   init(window.PATENT_DATA);
 } else {
@@ -467,14 +513,14 @@ function applyFilters() {
       .filter(p =>
         p.n.toLowerCase().includes(q) ||
         p.u.toLowerCase().includes(q) ||
-        p.a.toLowerCase().includes(q)
+        (p.a && p.a.toLowerCase().includes(q))
       )
       .map(p => {
         // Compute search relevance score
         var s = 0;
         var nl = p.n.toLowerCase();
         var ul = p.u.toLowerCase();
-        var al = p.a.toLowerCase();
+        var al = p.a ? p.a.toLowerCase() : '';
         if (nl === q) s += 100;
         else if (nl.startsWith(q)) s += 50;
         else if (nl.includes(q)) s += 20;
@@ -515,8 +561,15 @@ function loadMore() {
   const container = document.getElementById('patentList');
 
   chunk.forEach((p, i) => {
-    const card = document.createElement('div');
+    var card = document.createElement('div');
     card.className = 'patent-card cat-' + p.c;
+    card.setAttribute('data-idx', p._idx != null ? p._idx : '');
+    var absHtml;
+    if (p.a != null) {
+      absHtml = p.a ? '<p>' + escapeHtml(p.a) + '</p>' : '<p class="no-abstract">暂无摘要</p>';
+    } else {
+      absHtml = '<p class="no-abstract" style="color:#cbd5e0">摘要加载中...</p>';
+    }
     card.innerHTML =
       '<div class="patent-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
         '<div class="patent-info">' +
@@ -528,9 +581,7 @@ function loadMore() {
         '</div>' +
         '<div class="expand-icon">&#9660;</div>' +
       '</div>' +
-      '<div class="patent-abstract">' +
-        (p.a ? '<p>' + escapeHtml(p.a) + '</p>' : '<p class="no-abstract">暂无摘要</p>') +
-      '</div>';
+      '<div class="patent-abstract">' + absHtml + '</div>';
     container.appendChild(card);
   });
 

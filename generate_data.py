@@ -241,19 +241,34 @@ def main():
 
     deduped.sort(key=sort_key)
 
-    # Output JSON
+    # Split abstracts out for fast initial load
+    abstracts = [p.pop('a') for p in deduped]
+    # Reorder keys: n first (shown in list), then u, c, s
+    slim = [{'n': p['n'], 'u': p['u'], 'c': p['c'], 's': p['s']} for p in deduped]
+
+    # Output full JSON (without abstracts)
     out_path = os.path.join(BASE, 'patents.json')
     with open(out_path, 'w', encoding='utf-8') as f:
-        json.dump(deduped, f, ensure_ascii=False, separators=(',', ':'))
+        json.dump(slim, f, ensure_ascii=False, separators=(',', ':'))
 
-    # Output JS (for file:// compatibility)
+    # Output JS (patent list only, no abstracts — fast initial load)
     js_path = os.path.join(BASE, 'patents.js')
     with open(js_path, 'w', encoding='utf-8') as f:
         f.write('window.PATENT_DATA=')
-        json.dump(deduped, f, ensure_ascii=False, separators=(',', ':'))
+        json.dump(slim, f, ensure_ascii=False, separators=(',', ':'))
         f.write(';')
 
-    print(f'\nWritten {len(deduped)} patents to patents.json and patents.js')
+    # Output abstracts separately (lazy-loaded in background)
+    abs_js_path = os.path.join(BASE, 'patent_abstracts.js')
+    with open(abs_js_path, 'w', encoding='utf-8') as f:
+        f.write('window.PATENT_ABSTRACTS=')
+        json.dump(abstracts, f, ensure_ascii=False, separators=(',', ':'))
+        f.write(';')
+    abs_json_path = os.path.join(BASE, 'patent_abstracts.json')
+    with open(abs_json_path, 'w', encoding='utf-8') as f:
+        json.dump(abstracts, f, ensure_ascii=False, separators=(',', ':'))
+
+    print(f'\nWritten {len(deduped)} patents to patents.json, patents.js, patent_abstracts.json, patent_abstracts.js')
 
     # Print file stats
     print('\nPer-file counts:')
