@@ -343,7 +343,6 @@
   钱塘区高校产学研联盟 · 专利成果推广平台
 </div>
 
-<script src="patents.js"></script>
 <script>
 const PAGE_SIZE = 50;
 
@@ -356,23 +355,58 @@ let displayCount = 0;
 const catColors = { '车': '#e53e3e', '药': '#38a169', '芯': '#805ad5', '化': '#dd6b20', '智': '#3182ce' };
 const catNames = ['车', '药', '芯', '化', '智'];
 
-// ---- Load data ----
+// ---- Load data (async with file:// fallback) ----
 function init(data) {
   allPatents = data;
   buildStats();
   applyFilters();
   document.getElementById('loading').style.display = 'none';
 }
-// Fallback: if loaded via file://, fetch fails, try script tag approach
-if (window.PATENT_DATA) {
+
+function showLoadError(msg) {
+  document.getElementById('loading').innerHTML =
+    '<p style="color:#e53e3e;line-height:2">' + msg + '</p>' +
+    '<button onclick="location.reload()" style="margin-top:12px;padding:8px 24px;border-radius:20px;border:2px solid #3182ce;background:#fff;color:#3182ce;font-size:0.9rem;cursor:pointer">刷新重试</button>';
+}
+
+function loadDataAsync() {
+  var loadingEl = document.getElementById('loading');
+
+  // Try fetch first (works over HTTP, shows the loading spinner while downloading)
+  fetch('patents.json')
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) { init(data); })
+    .catch(function() {
+      // fetch failed — try window.PATENT_DATA if already set by a prior script load
+      if (window.PATENT_DATA && window.PATENT_DATA.length) {
+        init(window.PATENT_DATA);
+        return;
+      }
+      // Dynamically load patents.js (file:// fallback)
+      var s = document.createElement('script');
+      s.src = 'patents.js';
+      s.onload = function() {
+        if (window.PATENT_DATA && window.PATENT_DATA.length) {
+          init(window.PATENT_DATA);
+        } else {
+          showLoadError('数据加载失败，请检查网络连接后刷新重试。');
+        }
+      };
+      s.onerror = function() {
+        showLoadError('数据文件加载失败，请确认 patents.json 文件存在。');
+      };
+      document.head.appendChild(s);
+    });
+}
+
+// Check if patents.js was preloaded (e.g. via script tag or file://)
+if (window.PATENT_DATA && window.PATENT_DATA.length) {
   init(window.PATENT_DATA);
 } else {
-  fetch('patents.json')
-    .then(res => res.json())
-    .then(data => init(data))
-    .catch(err => {
-      document.getElementById('loading').innerHTML = '<p style="color:#e53e3e">数据加载失败，请确认 patents.json 或 patents.js 文件存在。</p>';
-    });
+  loadDataAsync();
 }
 
 // ---- Stats ----
