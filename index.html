@@ -343,6 +343,7 @@
   钱塘区高校产学研联盟 · 专利成果推广平台
 </div>
 
+<script src="patents.js"></script>
 <script>
 const PAGE_SIZE = 50;
 
@@ -356,17 +357,23 @@ const catColors = { '车': '#e53e3e', '药': '#38a169', '芯': '#805ad5', '化':
 const catNames = ['车', '药', '芯', '化', '智'];
 
 // ---- Load data ----
-fetch('patents.json')
-  .then(res => res.json())
-  .then(data => {
-    allPatents = data;
-    buildStats();
-    applyFilters();
-    document.getElementById('loading').style.display = 'none';
-  })
-  .catch(err => {
-    document.getElementById('loading').innerHTML = '<p style="color:#e53e3e">数据加载失败，请确认 patents.json 文件存在且通过 HTTP 方式访问此页面。</p>';
-  });
+function init(data) {
+  allPatents = data;
+  buildStats();
+  applyFilters();
+  document.getElementById('loading').style.display = 'none';
+}
+// Fallback: if loaded via file://, fetch fails, try script tag approach
+if (window.PATENT_DATA) {
+  init(window.PATENT_DATA);
+} else {
+  fetch('patents.json')
+    .then(res => res.json())
+    .then(data => init(data))
+    .catch(err => {
+      document.getElementById('loading').innerHTML = '<p style="color:#e53e3e">数据加载失败，请确认 patents.json 或 patents.js 文件存在。</p>';
+    });
+}
 
 // ---- Stats ----
 function buildStats() {

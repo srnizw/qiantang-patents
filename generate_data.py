@@ -241,12 +241,19 @@ def main():
 
     deduped.sort(key=sort_key)
 
-    # Output
+    # Output JSON
     out_path = os.path.join(BASE, 'patents.json')
     with open(out_path, 'w', encoding='utf-8') as f:
         json.dump(deduped, f, ensure_ascii=False, separators=(',', ':'))
 
-    print(f'\nWritten {len(deduped)} patents to patents.json')
+    # Output JS (for file:// compatibility)
+    js_path = os.path.join(BASE, 'patents.js')
+    with open(js_path, 'w', encoding='utf-8') as f:
+        f.write('window.PATENT_DATA=')
+        json.dump(deduped, f, ensure_ascii=False, separators=(',', ':'))
+        f.write(';')
+
+    print(f'\nWritten {len(deduped)} patents to patents.json and patents.js')
 
     # Print file stats
     print('\nPer-file counts:')
