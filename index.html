@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>钱塘区产学研高校专利成果推广</title>
+<title>钱塘区高校产学研联盟高校专利成果推广</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -12,10 +12,11 @@
     color: #1a1a2e;
     min-height: 100vh;
   }
+
   .header {
     background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #3182ce 100%);
     color: #fff;
-    padding: 40px 20px 30px;
+    padding: 36px 20px 28px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -23,51 +24,87 @@
   .header::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     height: 4px;
     background: linear-gradient(90deg, #ecc94b, #ed8936, #ecc94b);
   }
   .header h1 {
-    font-size: clamp(1.3rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
     font-weight: 700;
     letter-spacing: 2px;
     position: relative;
     z-index: 1;
   }
   .header .subtitle {
-    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
     opacity: 0.85;
-    margin-top: 8px;
+    margin-top: 6px;
     position: relative;
     z-index: 1;
   }
+
   .stats {
     display: flex;
     justify-content: center;
-    gap: 24px;
-    padding: 16px 20px;
+    gap: 12px;
+    padding: 12px 16px;
     background: #fff;
     border-bottom: 1px solid #e2e8f0;
     flex-wrap: wrap;
   }
-  .stat-item { text-align: center; }
-  .stat-item .num {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2b6cb0;
+  .stat-item {
+    text-align: center;
+    padding: 4px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
   }
-  .stat-item .label {
-    font-size: 0.8rem;
-    color: #718096;
-    margin-top: 2px;
+  .stat-item:hover { background: #edf2f7; }
+  .stat-item.active { background: #ebf8ff; }
+  .stat-item .num { font-size: 1.3rem; font-weight: 700; }
+  .stat-item .label { font-size: 0.7rem; color: #718096; margin-top: 2px; }
+  .stat-item .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
   }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    color: #4a5568;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab:hover { border-color: #3182ce; color: #3182ce; }
+  .tab.active {
+    background: #3182ce;
+    color: #fff;
+    border-color: #3182ce;
+  }
+
   .container {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 16px;
   }
+
   .search-box {
     position: relative;
     margin-bottom: 16px;
@@ -85,47 +122,46 @@
   .search-box input:focus { border-color: #3182ce; }
   .search-box .icon {
     position: absolute;
-    left: 14px;
-    top: 50%;
+    left: 14px; top: 50%;
     transform: translateY(-50%);
     color: #a0aec0;
     font-size: 1.1rem;
   }
-  .patent-list { display: flex; flex-direction: column; gap: 12px; }
+  .result-info {
+    font-size: 0.8rem;
+    color: #a0aec0;
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .patent-list { display: flex; flex-direction: column; gap: 10px; }
+
   .patent-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     overflow: hidden;
     transition: box-shadow 0.2s;
     border-left: 4px solid #3182ce;
   }
   .patent-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .patent-card.cat-车 { border-left-color: #e53e3e; }
+  .patent-card.cat-药 { border-left-color: #38a169; }
+  .patent-card.cat-芯 { border-left-color: #805ad5; }
+  .patent-card.cat-化 { border-left-color: #dd6b20; }
+  .patent-card.cat-智 { border-left-color: #3182ce; }
+
   .patent-header {
-    padding: 16px 16px 12px;
+    padding: 14px 16px 10px;
     cursor: pointer;
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
     user-select: none;
-  }
-  .patent-index {
-    background: #3182ce;
-    color: #fff;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: 600;
-    flex-shrink: 0;
-    margin-top: 2px;
   }
   .patent-info { flex: 1; min-width: 0; }
   .patent-title {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     line-height: 1.5;
     color: #1a365d;
@@ -133,27 +169,32 @@
   .patent-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 16px;
+    gap: 6px 14px;
     margin-top: 6px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: #718096;
   }
-  .patent-meta span { display: inline-flex; align-items: center; gap: 4px; }
   .patent-meta .tag {
-    background: #ebf8ff;
-    color: #2b6cb0;
     padding: 2px 8px;
     border-radius: 4px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 500;
   }
+  .tag-车 { background: #fff5f5; color: #c53030; }
+  .tag-药 { background: #f0fff4; color: #276749; }
+  .tag-芯 { background: #faf5ff; color: #6b46c1; }
+  .tag-化 { background: #fffaf0; color: #9c4221; }
+  .tag-智 { background: #ebf8ff; color: #2b6cb0; }
+
   .expand-icon {
     color: #a0aec0;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     flex-shrink: 0;
-    margin-top: 6px;
+    margin-top: 5px;
     transition: transform 0.2s;
   }
   .patent-card.expanded .expand-icon { transform: rotate(180deg); }
+
   .patent-abstract {
     max-height: 0;
     overflow: hidden;
@@ -161,147 +202,314 @@
     padding: 0 16px;
     background: #f7fafc;
     border-top: 0 solid #e2e8f0;
-  }
-  .patent-card.expanded .patent-abstract {
-    max-height: 600px;
-    padding: 14px 16px;
-    border-top-width: 1px;
-  }
-  .patent-abstract p {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     line-height: 1.7;
     color: #4a5568;
     text-align: justify;
   }
+  .patent-card.expanded .patent-abstract {
+    max-height: 500px;
+    padding: 14px 16px;
+    border-top-width: 1px;
+  }
+  .patent-abstract .no-abstract {
+    color: #cbd5e0;
+    font-style: italic;
+  }
+
+  .load-more {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 16px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    color: #718096;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .load-more:hover {
+    border-color: #3182ce;
+    color: #3182ce;
+    background: #ebf8ff;
+  }
+  .load-more:disabled {
+    display: none;
+  }
+
   .empty-state {
     text-align: center;
     padding: 60px 20px;
     color: #a0aec0;
-    display: none;
   }
   .empty-state .big-icon { font-size: 3rem; margin-bottom: 12px; }
+
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+  }
+  .loading .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #3182ce;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   .footer {
     text-align: center;
     padding: 24px 20px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: #a0aec0;
     border-top: 1px solid #e2e8f0;
     margin-top: 24px;
+    line-height: 1.8;
   }
+
+  .back-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #3182ce;
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 100;
+    transition: opacity 0.2s;
+  }
+  .back-top:hover { opacity: 0.85; }
+
   @media (max-width: 480px) {
-    .header { padding: 30px 16px 24px; }
-    .stats { gap: 16px; }
-    .patent-header { padding: 14px 14px 10px; }
-    .patent-title { font-size: 0.92rem; }
+    .header { padding: 28px 14px 22px; }
+    .stats { gap: 6px; }
+    .stat-item { padding: 4px 8px; }
+    .stat-item .num { font-size: 1.1rem; }
+    .tabs { gap: 2px; padding: 10px 8px; }
+    .tab { padding: 6px 14px; font-size: 0.8rem; }
+    .patent-header { padding: 12px 14px 8px; }
+    .patent-title { font-size: 0.88rem; }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>钱塘区产学研高校专利成果推广</h1>
-  <div class="subtitle">浙江工商大学 · 25 项发明专利展示</div>
+  <h1>钱塘区高校产学研联盟高校专利成果推广</h1>
+  <div class="subtitle">车药芯化智 · 五大产业 · 高校专利成果展示</div>
 </div>
 
-<div class="stats">
-  <div class="stat-item">
-    <div class="num">25</div>
-    <div class="label">专利总数</div>
-  </div>
-  <div class="stat-item">
-    <div class="num">6</div>
-    <div class="label">合作单位</div>
-  </div>
+<div class="stats" id="statsBar"></div>
+
+<div class="tabs" id="tabBar">
+  <div class="tab active" data-cat="all">全部</div>
+  <div class="tab" data-cat="车">🚗 车</div>
+  <div class="tab" data-cat="药">💊 药</div>
+  <div class="tab" data-cat="芯">💎 芯</div>
+  <div class="tab" data-cat="化">🧪 化</div>
+  <div class="tab" data-cat="智">🧠 智</div>
 </div>
 
 <div class="container">
   <div class="search-box">
     <span class="icon">&#128269;</span>
-    <input type="text" id="searchInput" placeholder="搜索专利标题或关键词..." autocomplete="off">
+    <input type="text" id="searchInput" placeholder="搜索专利名称、单位或关键词..." autocomplete="off">
   </div>
+  <div class="result-info" id="resultInfo"></div>
   <div class="patent-list" id="patentList"></div>
-  <div class="empty-state" id="emptyState">
-    <div class="big-icon">&#128373;</div>
+  <button class="load-more" id="loadMore" onclick="loadMore()">加载更多...</button>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="big-icon">&#128269;</div>
     <p>未找到匹配的专利</p>
+  </div>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>正在加载专利数据...</p>
   </div>
 </div>
 
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#9650;</button>
+
 <div class="footer">
-  数据来源：浙江工商大学 &nbsp;|&nbsp; 钱塘区产学研成果推广
+  数据来源：浙江理工大学、浙江工商大学、中国计量大学、杭州电子科技大学、浙江大学、浙江水利水电学院、江南大学<br>
+  钱塘区高校产学研联盟 · 专利成果推广平台
 </div>
 
 <script>
-const patents = [
-  {"id":"1","title":"一种电子鼻轻量化气体识别方法","patent_no":"202411897193.5","applicant":"浙江工商大学","abstract":"本发明提供一种电子鼻轻量化气体识别方法，兼顾了气体识别的准确性和模型的轻量化，可部署在资源受限的电子鼻微处理器上。本发明包括如下步骤：（一）、使用电子鼻进行数据采集，并对数据进行预处理；（二）、模型预训练，包括如下步骤：（1）、对预处理后的数据进行处理，生成虚拟传感器信号；（2）、使用生成的虚拟传感器信号构建马尔可夫链，并生成马尔可夫转移场时空伪图像；（3）、将时空伪图像作为输入，对卷积神经网络模型进行多轮并行训练，选出预训练好的最终模型；（三）、将模型部署到电子鼻的微处理器上；当在实际场景中使用该电子鼻时，电子鼻采集气体信号数据，由该电子鼻微处理器中的预训练模型推理识别，得到最终识别结果。"},
-  {"id":"2","title":"基于扩散模型的虚拟模特服装展示图像智能生成方法及装置","patent_no":"202411568331.5","applicant":"浙江工商大学","abstract":"本发明公开了一种基于扩散模型的虚拟模特服装展示图像智能生成方法及装置。使用数据集中的原有数据与服装分割模型处理得到目标服装图像和姿态图像，并训练得到服装、姿态的重建变分自编码器以及自适应姿态生成模型M1；对数据集内的原有数据进行空间拼接构建得到组合数据；用组合数据进行条件扩散模型的微调训练，从特征融合、引导生成进行服装增强，得到服装增强的展示图像生成模型M2；输入素体人台模特或任意人物身穿目标服装的图像，通过M1和M2得到初步的服装展示图像，使用人脸修复模型优化得到最终服装展示图像。本发明从训练模式、服装特征保留及生成结果方面实现创新，能够实现操作便捷和高质量的虚拟模特服装展示图像生成。"},
-  {"id":"3","title":"基于代码所有权信息和深度学习的软件跟踪能力链恢复方法","patent_no":"202210316741.5","applicant":"浙江工商大学","abstract":"本发明属于软件跟踪能力链恢复技术领域，公开了一种基于代码所有权信息和深度学习的软件跟踪能力链恢复方法，其特征在于，包括如下步骤：步骤1：计算出高级制品和源代码之间候选链接列表；步骤2：识别每个源代码制品的作者；步骤3：定义作者上下文；步骤4：将代码所有权信息与文本信息相结合。本发明提出的方法适用于恢复需求和代码之间的跟踪能力链，它能够充分地利用代码中所包含的代码所有权信息，并且利用深度学习的神经网络计算相似性，大幅度提高了恢复需求和代码之间跟踪能力链的准确度。"},
-  {"id":"4","title":"一种基于正则表达式的全自动测试样例生成和评测方法","patent_no":"202211370541.4","applicant":"浙江工商大学","abstract":"本发明公开了一种基于正则表达式的全自动测试样例生成和评测方法。本发明首先根据题目的要求给出测试样例对应的正则表达式集合；并定义格式化函数；其次根据正则表达式集合，使用生成函数生成相应的测试样例，并用格式化函数格式化得到一组测试样例，多组测试样组成一个测试样例列表；然后使用列表中的测试样例分别对用户提交的程序和题目的标准程序进行测试，得到输出结果；最后使用比较函数判断用户提交的程序是否通过测试样例的测试。本发明利用正则表达式来随机生成测试样例，可以有效解决测试样例泄漏等问题。基于正则表达式来生成测试样例，可以实现每次判题时所采用的测试样例是随机的，有效避免了部分用户有针对性地设计程序。"},
-  {"id":"5","title":"一种利用植物乳杆菌发酵增香蜜桔全果汁饮料的方法","patent_no":"202411937973.8","applicant":"浙江工商大学","abstract":"本发明属于微生物或酶的应用领域；具体涉及一种利用植物乳杆菌发酵增香蜜桔全果汁饮料的方法，包括以下步骤：新鲜蜜桔进行全果榨汁，而后调节pH至4.7~5.3，再进行巴氏杀菌，而后自然冷却至室温；将所得的自然冷却至室温的果汁立即接种乳酸菌后进行发酵，保证果汁接种后乳酸菌的初始浓度为107~108CFU/mL；将所得的发酵后蜜桔果汁离心，离心所得的澄清液为增香型发酵蜜桔全果汁饮料。采用本发明的方法能提升蜜桔全果汁饮料的风味。"},
-  {"id":"6","title":"基于华为鲲鹏处理器上的WRF移植与优化方法","patent_no":"202210746651.X","applicant":"浙江工商大学","abstract":"本发明公开了一种基于华为鲲鹏处理器上的WRF移植与优化方法。本发明首先安装鲲鹏移植分析工具，用于检测WRF在ARM上运行指令集、编译指令以及依赖库等差异，并获取当前鲲鹏处理器系统以及编译器版本，用于检测生成与系统相匹配的移植分析报告；将WRF的源码包放入移植分析工具上进行移植分析；在移植分析报告中，找到文件中有差异的指令，并按照报告中给出的建议对WRF源码包进行修改优化；将修改完的WRF源码包移动到鲲鹏处理器上；最后将WRF源码包解压，执行编译得到WRF的可执行程序wrf.exe。本发明解决了跨架构产生的性能问题，使得WRF完美地运行在低功耗、高性能的国产ARM处理器上。"},
-  {"id":"7","title":"多模态大模型辅助下噪声鲁棒的人体骨架无监督表示学习方法及装置","patent_no":"202411857631.5","applicant":"浙江工商大学","abstract":"本发明公开了一种多模态大模型辅助下噪声鲁棒的人体骨架无监督表示学习方法及装置，其方法包括：通过对与人体骨架序列对应的RGB视频进行采样得到关键帧，经多模态大模型生成动作文本描述；后将人体骨架序列与对应动作文本描述进行编码到公共空间，通过异常样本与信息熵联合估计的样本噪音评估方法生成更可靠的学习目标，使用噪音感知的对比学习方法对模型进行训练；最后，在经过一定批次的迭代训练后可得到性能更优的编码器。本发明在没有额外训练推理成本的前提下，利用编码器本身的能力来区分与动作无关的文本描述，使得模型学习到更加合理的相似性表示，同时较好地提高了编码器在下游任务的性能。"},
-  {"id":"8","title":"一种基于多尺度注意力约束的人脸视频血压预测方法","patent_no":"202411719284.X","applicant":"浙江工商大学","abstract":"本发明属于计算机视觉技术领域，公开了一种基于多尺度注意力约束的人脸视频血压预测方法，包括如下步骤：步骤1：提取远程光电容积脉搏波rPPG信号；首先通过MTCNN人脸检测算法在视频中检测到人脸并划分感兴趣区域ROI，提取到有效人脸区域，接着结合光流估计和中值滤波初步提取携带噪声的rPPG信号，在血压预测部分，对rPPG信号进行去基线漂移和再次滤波等处理得到相对干净的信号，再将rPPG信号进行窗口分割；步骤2：设计EBP-Net模型，将rPPG信号输入EBP-Net模型预测收缩压与舒张压。本发明简化了血压测量所需的信号种类，只需rPPG信号即可，测量的误差最小，降低了信号采集的成本。"},
-  {"id":"9","title":"一种基于多模态数据融合的网络沉迷行为监测方法和系统","patent_no":"202411887032.8","applicant":"浙江工商大学","abstract":"本发明属于计算机视觉、机器学习技术领域，涉及一种基于多模态数据融合的网络沉迷行为监测方法和系统，首先采集用户的多模态数据，包括生理信号数据和行为姿态数据；然后构建一个基于深度学习的多要素融合判断模型，将生理信号数据和行为姿态数据输入所述的多要素融合模型中进行同步处理，提取多模态特征并融合到统一的特征空间，同时采用多任务学习方法来联合训练生理信号数据和行为姿态数据；最后利用决策树或随机森林算法对用户的沉迷状态进行分类和评估。相比现有的网络沉迷行为监测方法，本发明在准确性、实时性、用户隐私保护、环境适应性、用户友好性、技术实现效率、泛化能力、综合干预能力以及端侧部署能力等方面，均展现出显著的优势。"},
-  {"id":"10","title":"基于图像预处理的对抗样本防御方法","patent_no":"202210643314.8","applicant":"浙江工商大学","abstract":"本发明属于人工智能安全技术领域，公开了一种基于图像预处理的对抗样本防御方法，包括步骤1：构建防御模型AGD；所述防御模型AGD共有17层网络，由三大模块构成，其中，前12层网络为扩张卷积模块，中间四层网络为特征增强模块，最后一层网络为注意力模块；步骤2：构建图像重建模型；基于超分辨率设计图像重建模型，对AGD防御模型处理后的样本进行重建；步骤3：构建防御框架SR-AGD；结合AGD防御模型和图像重建模型的特点，构建防御框架SR-AGD。本发明提出的基于图像预处理的防御技术SR-AGD有效解决了已有类似防御方法中存在的对抗扰动去除不完全、影响正常样本分类等缺陷，起到了良好的防御对抗攻击的效果。"},
-  {"id":"11","title":"基于语义解耦和动态参数生成的跨语言跨模态检索方法","patent_no":"202411874910.2","applicant":"浙江工商大学","abstract":"本发明公开了一种基于语义解耦和动态参数生成的跨语言跨模态检索方法，该方法引入语义解耦模块和动态适配器模块，语义解耦模块将一个句子解耦成语义相关特征和语义无关特征，根据这两个信息，能让模型对处理同个语义但是有不同表述方式的句子也能有较好的表现。动态适配器模块将语义解耦模块的输出通过低秩分解的方式融合到适配器中,将语义相关信息和语义无关信息进行融合，来提高跨语言跨模态检索能力。"},
-  {"id":"12","title":"一种基于图像模糊度的实时物体静止检测方法及系统","patent_no":"202411875786.1","applicant":"浙江工商大学","abstract":"本发明公开了一种基于图像模糊度的实时物体静止检测方法及系统，包括对视频流中的当前帧彩色图像转换为灰度图像和定长的灰度图像序列实时更新；灰度图像模糊度计算和模糊度序列实时更新；使用增量更新法实时更新平均图像并计算平均图像的模糊度；将平均图像的模糊度与模糊度序列中最大模糊度的比值作为相对静止系数，并与设定阈值比较，判断场景的运动状态。本发明通过融合连续多帧信息得到相对静止系数，可以实时、准确地，且稳定性良好，能有效抵抗噪声、光照变化的干扰。"},
-  {"id":"13","title":"用于智能机器人路径规划的网格模型地图构建方法","patent_no":"202210242363.0","applicant":"浙江工商大学","abstract":"本发明提供一种用于智能机器人路径规划的正六边形网格模型地图构建方法，包括：根据预设网格尺寸结合地图数据将视觉范围内平面区域剖分为多个无缝连接的、不重叠的正六边形空白基础网格；获取各空白基础网格的点云数据，结合地图数据赋予各空白基础网格地形特征、格元属性及格边属性得到基础网格，形成覆盖平面区域的网格模型，确定机器人及激光点在网格模型中的坐标，计算激光点所在基础网格的概率估计值，确定网格处于占据状态或空闲状态；更新机器人所在基础网格与激光点所在基础网格之间的其他基础网格的状态；根据各基础网格的状态对所在环境的网格模型进行增量建图。该方法获得的地图可以应用于智能机器人的地图构建和路径规划中。"},
-  {"id":"14","title":"污水处理厂原位污水和臭气处理装置","patent_no":"202010047676.1","applicant":"浙江工商大学","abstract":"本发明公开了一种污水处理厂原位污水和臭气处理装置，该装置主要由臭气收集系统、臭气输送系统、臭气处理系统组成；臭气收集系统由集气罩、风管、第一风机组成；臭气输送系统由管道、第二风机组成；臭气处理系统利用隔板将缺氧池隔开，分为前置的选择池区域和后置的缺氧池区域，其中前置的选择池有三种不同的结构，针对不同情况可采用适宜的方案进行臭气的溶解，进而通过同步脱氮除硫和厌氧氨氧化反应机理原位处理含硝酸盐的污水和含硫含氨臭气。本发明方案简单，造价低，思路新颖，脱除城市污水处理厂臭气的同时，将其中的硫化物和氨用于还原硝酸盐，达到污水中脱氮的要求，做到以废治废，并减少碳源投入量和剩余污泥产量，具有良好的生态效益。"},
-  {"id":"15","title":"一种基于混合框架的三维模型配准方法及系统","patent_no":"202510193244.4","applicant":"浙江工商大学","abstract":"本发明公开了一种基于混合框架的三维模型配准方法及系统。该方法旨在计算三维变换矩阵，以将存在相同区域的两个三维模型对齐，将三维模型配准分解为二维图像匹配和三维点云配准两个步骤，两者对应的功能分别是粗配准和精配准。对于前者，本发明对渲染得到的图像集提出一个二阶段的团搜索方法；对于后者，本发明对提取自三维模型的点云提出动态ICP算法。本发明采用了二维与三维结合的方式，与已有的三维方法相比，本发明在精度，泛用性，速度上均有所突破，具有可观的竞争力。"},
-  {"id":"16","title":"一种半导体冷凝除湿装置及方法","patent_no":"202111224125.9","applicant":"浙江工商大学","abstract":"本发明提供一种半导体冷凝除湿装置及方法，其中，装置包括显示面板与主机，显示面板与主机通过双绞线连接；主机包括：主机模块，散热风扇和半导体制冷片。其中，主机模块包括：处理单元和湿度传感器。处理单元用于计算湿度传感器采集到的湿度值和湿度标准值之间的均方误差值，并且根据均方误差值和半导体冷凝除湿装置的电压、电流计算得到调节功率，根据调节功率对半导体冷凝除湿装置的功率进行动态调节。本发明通过将显示面板和主机采用分离式架构设计，避免打开柜门操作进行运维，从而提高了运维的执行效率和开关柜的安全性；通过预设动态平衡控制算法使得半导体冷凝除湿装置处于最佳的工作状态，提高了半导体冷凝除湿装置的工作效率。"},
-  {"id":"17","title":"食品中麦麸质含量的检测方法及试剂盒","patent_no":"202211666745.2","applicant":"浙江工商大学","abstract":"本发明涉及一种食品中麦麸质含量的检测方法及试剂盒。该试剂盒包括拉曼增强基底溶液和石英片，所述拉曼增强基底溶液包括金纳米棒二聚体和拉曼信号分子，所述金纳米棒二聚体是通过适配体功能化的金纳米棒和适配体互补链功能化的金纳米棒自组装而成。该试剂盒操作简便、仪器便捷、可快速、稳定、灵敏地检测食品中的麦麸质含量。"},
-  {"id":"18","title":"乳酸菌后生元的制备方法及其用途","patent_no":"202510156559.1","applicant":"浙江工商大学","abstract":"本发明属于微生物技术领域，具体涉及乳酸菌的益生特性及其后生元对肺纤维化的缓解作用。本发明公开了一种戊糖片球菌（Pediococcus pentosaceus）ZFML001，其保藏编号为CCTCC NO:M 2024601。本发明还同时提供了利用上述戊糖片球菌（Pediococcus pentosaceus）ZFML001制备而得的后生元，以及提供了该后生元在制备缓解或辅助治疗肺纤维化药物中的应用。"},
-  {"id":"19","title":"一种羊栖菜多糖铁复合物的制备方法及应用","patent_no":"202310886585.0","applicant":"浙江工商大学","abstract":"本发明属于多糖复合物技术领域，具体涉及一种羊栖菜多糖铁复合物的制备方法及应用。本发明采用羊栖菜多糖作为配糖体，将其与三价铁化合物反应来制备羊栖菜多糖铁复合物，通过工艺条件的优化，有效提高了所制备的羊栖菜多糖铁复合物的铁含量，进一步增强羊栖菜多糖铁复合物的生物活性。本发明制备的羊栖菜多糖铁复合物具有良好的溶出性能，副作用小、稳定性高、溶解度好，与传统补铁剂相比，更易于被机体吸收。此外，羊栖菜多糖铁复合物在体外具有抗氧化活性，对羟基自由基有较强的抗氧化活性。本发明的制备工艺简单、原料来源丰富，可供预防或治疗缺铁性贫血使用，为新型补铁剂提供了新的选择。"},
-  {"id":"20","title":"面向医疗数据支持隐私保护的中文密文多关键字模糊搜索方法","patent_no":"202210589520.5","applicant":"浙江工商大学，浙江大学","abstract":"本发明公开了一种面向医疗数据支持隐私保护的中文密文多关键字模糊搜索方法。本发明使用模糊搜索。本发明采用基于知识图谱的方法，让数据拥有者对数据进行预处理，然后使用多个敏感哈希函数将关键字映射在m位的布隆过滤器中，每一个关键字会构成一个树形的关键字索引，一共有三层，第一层是单一关键字，第二层是包含这个关键字的所有文档的其他的关键字，第三层是包含这个关键字的所有文档的ID。然后对关键字索引和所有文档分别加密，上传到云服务器。云服务器执行搜索过程，返回相关度高的加密文档，用户进行解密。本发明可以允许用户输入错误的关键字，并且可以实现较好的搜索准确性。"},
-  {"id":"21","title":"一种基于双重动态稀疏训练的物联网联邦学习方法和系统","patent_no":"202411689935.5","applicant":"浙江工商大学，浙大城市学院","abstract":"本发明公开了一种基于双重动态稀疏训练的物联网联邦学习方法和系统。本发明面向物联网场景，采用动态稀疏训练，且仅使用本地数据对模型进行训练，可以达到低通信开销和个性化。然后只将模型参数传输到服务器上进行聚合，并提出了一种个性化聚合方法，来保证模型在上传参数之后能保留模型的个性化不丢失。通过传输轻量稀疏模型，有效解决物联网场景下设备资源不均，通信开销过大等问题，并且提出个性化聚合，对不同设备上的稀疏模型进行聚合，提高性能。"},
-  {"id":"22","title":"一种基于视频的单阶段多人二维人体姿态估计方法及装置","patent_no":"202411570528.2","applicant":"浙江工商大学，浙江横店影视城有限公司","abstract":"本发明公开了一种基于视频的单阶段多人二维人体姿态估计方法及装置，属于多人二维人体姿态估计领域，通过引入时序信息融合技术对视频序列中的多人人体姿态进行高效建模。首先，本发明对单个视频序列中的多人人体信息进行全面建模，构建了跨帧人体时序信息融合模块，能够有效捕捉和增强目标帧中人体的全局信息，使得在复杂场景下仍能准确识别和定位多个人体。其次，该方法深入建模人体各个关节点的信息，并设计了跨帧关节点时序信息融合模块，专门用于强化同一人在不同帧中相同关节点的信息传递与关联性。这种设计能够显著改善在视频序列中由于运动模糊、遮挡以及对焦不准等原因导致的关节点识别困难，从而使目标帧的关节点预测更加精确和稳定。"},
-  {"id":"23","title":"基于多层级信息时空融合的三维人体姿态估计方法及装置","patent_no":"202411569851.8","applicant":"浙江工商大学，杭州小伴熊科技有限公司","abstract":"本发明公开了一种基于多层级信息时空融合的三维人体姿态估计方法及装置，包括：取得一段时序的二维人体姿态序列；将其输入嵌入层对每一个二维关键点进行处理，对处理得到的Token添加空间位置编码，进行关节级别的空间信息的融合；再复制三份，分别添加关节、部位、姿态级别的时间位置编码，然后分别进行对应级别的时间信息融合；融合时间信息后通过对应级别的全连接层，分别回归得到姿态的旋转角度、各部位的无方向位置中心、各关节相对于所属部位的相对位置；进一步计算出人体每一个关节的三维坐标数据。本发明通过多层级的利用关节、部位、姿态三个级别的运动信息，对时间、空间两个维度进行信息融合，提升了三维人体姿态估计的准确性"},
-  {"id":"24","title":"基于不经意传输的医疗物联网隐私保护数据共享方法","patent_no":"202211252156.X","applicant":"浙江工商大学，浙江鹏信信息科技股份有限公司","abstract":"本发明公开了一种基于不经意传输的医疗物联网隐私保护数据共享方法。可信机构选择椭圆曲线以及规定相应参数并公开，所有参与方生成公私钥对并向可信机构注册。数据拥有者通过异或和椭圆曲线中点乘来获取加密密钥，并使用加密密钥对所有数据进行加密，将加密后数据发送给云服务器，再通过shamir门限秘密分享将加密密钥分成m个分享，将这m个分享和分发给每一个边缘服务器。数据使用者发起不经意传输，由此获得k个分享，通过拉格朗日插值法实现恢复加密数据。本发明使用的椭圆曲线加密方案、哈希和异或操作，在共享过程中的效率得到极大地提高。另外，不经意传输协议实现双向隐私保护，提供较高的安全性。"},
-  {"id":"25","title":"基于联邦贝叶斯学习的算力网络中异常数据识别方法及装置","patent_no":"202411575539.X","applicant":"浙江工商大学，浙江省新型互联网交换中心有限责任公司","abstract":"本发明公开了一种基于联邦贝叶斯学习的算力网络中异常数据识别方法及装置，在算力网络架构下，基于贝叶斯神经网络构建去中心化联邦学习框架，该框架下每个算力节点都具有多种算力属性；首次训练选择数据量丰富且计算能力强的算力节点作为起始训练节点，完成训练后利用内在可解释性，分析出输入层影响最大的特征。根据算力属性评估，选择出下一个参与训练的算力节点，将关键特征传递给改算力节点对其先验分布进行对应调整，再进行训练。重复操作直至模型收敛，性能稳定。本发明既利用了算力网络中算力节点的调度，提高资源利用率，又保证了数据的隐私性。此外，本发明还充分发挥了贝叶斯神经网络的抗拟合性以及可解释性，保证了深度学习准确性。"}
-];
+const PAGE_SIZE = 50;
 
-function renderCards(list) {
+let allPatents = [];
+let filteredPatents = [];
+let currentCat = 'all';
+let currentSearch = '';
+let displayCount = 0;
+
+const catColors = { '车': '#e53e3e', '药': '#38a169', '芯': '#805ad5', '化': '#dd6b20', '智': '#3182ce' };
+const catNames = ['车', '药', '芯', '化', '智'];
+
+// ---- Load data ----
+fetch('patents.json')
+  .then(res => res.json())
+  .then(data => {
+    allPatents = data;
+    buildStats();
+    applyFilters();
+    document.getElementById('loading').style.display = 'none';
+  })
+  .catch(err => {
+    document.getElementById('loading').innerHTML = '<p style="color:#e53e3e">数据加载失败，请确认 patents.json 文件存在且通过 HTTP 方式访问此页面。</p>';
+  });
+
+// ---- Stats ----
+function buildStats() {
+  const bar = document.getElementById('statsBar');
+  const counts = { all: allPatents.length };
+  catNames.forEach(c => {
+    counts[c] = allPatents.filter(p => p.c === c).length;
+  });
+
+  let html = '<div class="stat-item active" data-cat="all" onclick="selectStat(\'all\')">'
+    + '<div class="num">' + counts.all + '</div><div class="label">专利总数</div></div>';
+  catNames.forEach(c => {
+    html += '<div class="stat-item" data-cat="' + c + '" onclick="selectStat(\'' + c + '\')">'
+      + '<div class="num" style="color:' + catColors[c] + '">' + counts[c] + '</div>'
+      + '<div class="label"><span class="dot" style="background:' + catColors[c] + '"></span>' + c + '</div></div>';
+  });
+  bar.innerHTML = html;
+}
+
+function selectStat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.stat-item').forEach(el => el.classList.remove('active'));
+  document.querySelector('.stat-item[data-cat="' + cat + '"]').classList.add('active');
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  const tab = document.querySelector('.tab[data-cat="' + cat + '"]');
+  if (tab) tab.classList.add('active');
+  applyFilters();
+}
+
+// ---- Tabs ----
+document.getElementById('tabBar').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('tab')) return;
+  currentCat = e.target.dataset.cat;
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  e.target.classList.add('active');
+  document.querySelectorAll('.stat-item').forEach(el => el.classList.remove('active'));
+  const si = document.querySelector('.stat-item[data-cat="' + currentCat + '"]');
+  if (si) si.classList.add('active');
+  applyFilters();
+});
+
+// ---- Search ----
+document.getElementById('searchInput').addEventListener('input', function() {
+  currentSearch = this.value.trim().toLowerCase();
+  applyFilters();
+});
+
+// ---- Filter ----
+function applyFilters() {
+  let list = allPatents;
+  if (currentCat !== 'all') {
+    list = list.filter(p => p.c === currentCat);
+  }
+  if (currentSearch) {
+    const q = currentSearch;
+    list = list
+      .filter(p =>
+        p.n.toLowerCase().includes(q) ||
+        p.u.toLowerCase().includes(q) ||
+        p.a.toLowerCase().includes(q)
+      )
+      .map(p => {
+        // Compute search relevance score
+        var s = 0;
+        var nl = p.n.toLowerCase();
+        var ul = p.u.toLowerCase();
+        var al = p.a.toLowerCase();
+        if (nl === q) s += 100;
+        else if (nl.startsWith(q)) s += 50;
+        else if (nl.includes(q)) s += 20;
+        if (al.includes(q)) s += 5;
+        if (ul.includes(q)) s += 2;
+        // Boost: count occurrences of each query word
+        var words = q.split(/\s+/);
+        words.forEach(function(w) {
+          if (!w) return;
+          s += (nl.split(w).length - 1) * 3;
+          s += (al.split(w).length - 1);
+        });
+        return { p: p, score: s };
+      })
+      .sort(function(a, b) { return b.score - a.score; })
+      .map(function(x) { return x.p; });
+  }
+  filteredPatents = list;
+  displayCount = 0;
+  document.getElementById('patentList').innerHTML = '';
+  document.getElementById('resultInfo').textContent = '共 ' + list.length + ' 条结果';
+  if (list.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('loadMore').style.display = 'none';
+  } else {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('loadMore').style.display = 'block';
+    loadMore();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- Render ----
+function loadMore() {
+  const start = displayCount;
+  const end = Math.min(start + PAGE_SIZE, filteredPatents.length);
+  const chunk = filteredPatents.slice(start, end);
   const container = document.getElementById('patentList');
-  const empty = document.getElementById('emptyState');
-  container.innerHTML = '';
-  if (list.length === 0) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  list.forEach(function(p) {
+
+  chunk.forEach((p, i) => {
     const card = document.createElement('div');
-    card.className = 'patent-card';
+    card.className = 'patent-card cat-' + p.c;
     card.innerHTML =
-      '<div class="patent-header" onclick="toggleCard(this)">' +
-        '<div class="patent-index">' + p.id + '</div>' +
+      '<div class="patent-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
         '<div class="patent-info">' +
-          '<div class="patent-title">' + p.title + '</div>' +
+          '<div class="patent-title">' + escapeHtml(p.n) + '</div>' +
           '<div class="patent-meta">' +
-            '<span>&#128220; ' + p.patent_no + '</span>' +
-            '<span class="tag">' + p.applicant + '</span>' +
+            '<span>' + escapeHtml(p.u) + '</span>' +
+            '<span class="tag tag-' + p.c + '">' + p.c + '</span>' +
           '</div>' +
         '</div>' +
         '<div class="expand-icon">&#9660;</div>' +
       '</div>' +
-      '<div class="patent-abstract"><p>' + p.abstract + '</p></div>';
+      '<div class="patent-abstract">' +
+        (p.a ? '<p>' + escapeHtml(p.a) + '</p>' : '<p class="no-abstract">暂无摘要</p>') +
+      '</div>';
     container.appendChild(card);
   });
+
+  displayCount = end;
+  const btn = document.getElementById('loadMore');
+  if (displayCount >= filteredPatents.length) {
+    btn.style.display = 'none';
+  }
 }
 
-function toggleCard(header) {
-  header.parentElement.classList.toggle('expanded');
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
-function filterCards() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  if (!q) { renderCards(patents); return; }
-  renderCards(patents.filter(function(p) {
-    return p.title.toLowerCase().indexOf(q) !== -1 ||
-           p.abstract.toLowerCase().indexOf(q) !== -1 ||
-           p.patent_no.toLowerCase().indexOf(q) !== -1 ||
-           p.applicant.toLowerCase().indexOf(q) !== -1;
-  }));
-}
-
-document.getElementById('searchInput').addEventListener('input', filterCards);
-renderCards(patents);
+// ---- Back to top ----
+window.addEventListener('scroll', function() {
+  document.getElementById('backTop').style.display = window.scrollY > 500 ? 'block' : 'none';
+});
 </script>
 </body>
 </html>
