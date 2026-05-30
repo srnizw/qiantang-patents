@@ -537,6 +537,28 @@ function applyFilters() {
       })
       .sort(function(a, b) { return b.score - a.score; })
       .map(function(x) { return x.p; });
+  } else if (currentCat === 'all') {
+    // Round-robin by university for even distribution
+    var groups = {};
+    for (var i = 0; i < list.length; i++) {
+      var uni = list[i].u;
+      if (!groups[uni]) groups[uni] = [];
+      groups[uni].push(list[i]);
+    }
+    var unis = Object.keys(groups);
+    var maxLen = 0;
+    for (var j = 0; j < unis.length; j++) {
+      if (groups[unis[j]].length > maxLen) maxLen = groups[unis[j]].length;
+    }
+    var result = [];
+    for (var k = 0; k < maxLen; k++) {
+      for (var m = 0; m < unis.length; m++) {
+        if (k < groups[unis[m]].length) {
+          result.push(groups[unis[m]][k]);
+        }
+      }
+    }
+    list = result;
   }
   filteredPatents = list;
   displayCount = 0;
