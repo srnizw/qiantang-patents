@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智类专利成果｜浙江高校产学研联盟钱塘中心</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f0f4f8;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #3182ce 100%);
+    color: #fff;
+    padding: 36px 20px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ecc94b, #ed8936, #ecc94b);
+  }
+  .header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+  }
+  .header .subtitle {
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    opacity: 0.85;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 4px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .stat-item:hover { background: #edf2f7; }
+  .stat-item.active { background: #ebf8ff; }
+  .stat-item .num { font-size: 1.3rem; font-weight: 700; }
+  .stat-item .label { font-size: 0.7rem; color: #718096; margin-top: 2px; }
+  .stat-item .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    color: #4a5568;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab:hover { border-color: #3182ce; color: #3182ce; }
+  .tab.active {
+    background: #3182ce;
+    color: #fff;
+    border-color: #3182ce;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+  .search-box input:focus { border-color: #3182ce; }
+  .search-box .icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+    font-size: 1.1rem;
+  }
+  .result-info {
+    font-size: 0.8rem;
+    color: #a0aec0;
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .patent-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .patent-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    border-left: 4px solid #3182ce;
+  }
+  .patent-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .patent-card.cat-智 { border-left-color: #3182ce; }
+
+  .patent-header {
+    padding: 14px 16px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    user-select: none;
+  }
+  .patent-info { flex: 1; min-width: 0; }
+  .patent-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #1a365d;
+  }
+  .patent-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 6px;
+    font-size: 0.78rem;
+    color: #718096;
+  }
+  .patent-meta .tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+  .tag-智 { background: #ebf8ff; color: #2b6cb0; }
+
+  .expand-icon {
+    color: #a0aec0;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 5px;
+    transition: transform 0.2s;
+  }
+  .patent-card.expanded .expand-icon { transform: rotate(180deg); }
+
+  .patent-abstract {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 16px;
+    background: #f7fafc;
+    border-top: 0 solid #e2e8f0;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #4a5568;
+    text-align: justify;
+  }
+  .patent-card.expanded .patent-abstract {
+    max-height: 500px;
+    padding: 14px 16px;
+    border-top-width: 1px;
+  }
+  .patent-abstract .no-abstract {
+    color: #cbd5e0;
+    font-style: italic;
+  }
+
+  .load-more {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 16px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    color: #718096;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .load-more:hover {
+    border-color: #3182ce;
+    color: #3182ce;
+    background: #ebf8ff;
+  }
+  .load-more:disabled {
+    display: none;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+  }
+  .empty-state .big-icon { font-size: 3rem; margin-bottom: 12px; }
+
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+  }
+  .loading .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #3182ce;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .footer {
+    text-align: center;
+    padding: 24px 20px;
+    font-size: 0.78rem;
+    color: #a0aec0;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 24px;
+    line-height: 1.8;
+  }
+
+  .back-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #3182ce;
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 100;
+    transition: opacity 0.2s;
+  }
+  .back-top:hover { opacity: 0.85; }
+
+  @media (max-width: 480px) {
+    .header { padding: 28px 14px 22px; }
+    .stats { gap: 6px; }
+    .stat-item { padding: 4px 8px; }
+    .stat-item .num { font-size: 1.1rem; }
+    .tabs { gap: 2px; padding: 10px 8px; }
+    .tab { padding: 6px 14px; font-size: 0.8rem; }
+    .patent-header { padding: 12px 14px 8px; }
+    .patent-title { font-size: 0.88rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>浙江高校产学研联盟钱塘中心高校专利成果</h1>
+  <div class="subtitle">智 · 高校专利成果展示</div>
+</div>
+
+<div class="stats" id="statsBar"></div>
+
+<div class="tabs" id="tabBar">
+  <div class="tab active" data-cat="智">🧠 智</div>
+</div>
+
+<div class="container">
+  <div class="search-box">
+    <span class="icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="搜索专利名称、单位或关键词..." autocomplete="off">
+  </div>
+  <div class="result-info" id="resultInfo"></div>
+  <div class="patent-list" id="patentList"></div>
+  <button class="load-more" id="loadMore" onclick="loadMore()">加载更多...</button>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="big-icon">&#128269;</div>
+    <p>未找到匹配的专利</p>
+  </div>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>正在加载专利数据...</p>
+  </div>
+</div>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#9650;</button>
+
+<div class="footer">
+  数据来源：浙江理工大学、浙江工商大学、中国计量大学、杭州电子科技大学、浙江大学、浙江水利水电学院、东南大学<br>
+  钱塘区高校产学研联盟 · 专利成果推广平台
+</div>
+
+<script>
+const PAGE_SIZE = 50;
+
+let allPatents = [];
+let filteredPatents = [];
+let currentCat = '智';
+let currentSearch = '';
+let displayCount = 0;
+let abstractsReady = false;
+
+const catColors = { '智': '#3182ce' };
+const catNames = ['智'];
+
+// ---- Load data (async with file:// fallback) ----
+function init(data) {
+  // Tag each patent with its index for abstract lookup
+  for (var i = 0; i < data.length; i++) { data[i]._idx = i; }
+  allPatents = data.filter(p => p.c === '智');
+  buildStats();
+  applyFilters();
+  document.getElementById('loading').style.display = 'none';
+  // Start loading abstracts in background
+  loadAbstracts();
+}
+
+function showLoadError(msg) {
+  document.getElementById('loading').innerHTML =
+    '<p style="color:#e53e3e;line-height:2">' + msg + '</p>' +
+    '<button onclick="location.reload()" style="margin-top:12px;padding:8px 24px;border-radius:20px;border:2px solid #3182ce;background:#fff;color:#3182ce;font-size:0.9rem;cursor:pointer">刷新重试</button>';
+}
+
+function loadDataAsync() {
+  // Try fetch first (works over HTTP, non-blocking)
+  fetch('patents.json')
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) { init(data); })
+    .catch(function() {
+      if (window.PATENT_DATA && window.PATENT_DATA.length) {
+        init(window.PATENT_DATA);
+        return;
+      }
+      // Dynamically load patents.js (file:// fallback)
+      var s = document.createElement('script');
+      s.src = 'patents.js';
+      s.onload = function() {
+        if (window.PATENT_DATA && window.PATENT_DATA.length) {
+          init(window.PATENT_DATA);
+        } else {
+          showLoadError('数据加载失败，请检查网络连接后刷新重试。');
+        }
+      };
+      s.onerror = function() {
+        showLoadError('数据文件加载失败，请确认 patents.json 文件存在。');
+      };
+      document.head.appendChild(s);
+    });
+}
+
+// ---- Lazy-load abstracts ----
+function loadAbstracts() {
+  if (window.PATENT_ABSTRACTS && window.PATENT_ABSTRACTS.length) {
+    mergeAbstracts(window.PATENT_ABSTRACTS);
+    return;
+  }
+  fetch('patent_abstracts.json')
+    .then(function(res) { return res.json(); })
+    .then(function(data) { mergeAbstracts(data); })
+    .catch(function() {
+      // file:// fallback
+      var s = document.createElement('script');
+      s.src = 'patent_abstracts.js';
+      s.onload = function() {
+        if (window.PATENT_ABSTRACTS && window.PATENT_ABSTRACTS.length) {
+          mergeAbstracts(window.PATENT_ABSTRACTS);
+        }
+      };
+      document.head.appendChild(s);
+    });
+}
+
+function mergeAbstracts(abstracts) {
+  abstractsReady = true;
+  for (var i = 0; i < allPatents.length; i++) {
+    allPatents[i].a = abstracts[allPatents[i]._idx] || '';
+  }
+  if (currentSearch) {
+    applyFilters();
+    return;
+  }
+  // Update abstracts in already-rendered cards
+  var cards = document.querySelectorAll('.patent-card');
+  for (var j = 0; j < cards.length; j++) {
+    var idx = parseInt(cards[j].getAttribute('data-idx'));
+    if (!isNaN(idx) && idx < abstracts.length) {
+      var absEl = cards[j].querySelector('.patent-abstract');
+      if (abstracts[idx]) {
+        absEl.innerHTML = '<p>' + escapeHtml(abstracts[idx]) + '</p>';
+      } else {
+        absEl.innerHTML = '<p class="no-abstract">暂无摘要</p>';
+      }
+    }
+  }
+}
+
+// Check if patents.js was preloaded
+if (window.PATENT_DATA && window.PATENT_DATA.length) {
+  init(window.PATENT_DATA);
+} else {
+  loadDataAsync();
+}
+
+// ---- Stats ----
+function buildStats() {
+  const bar = document.getElementById('statsBar');
+  const counts = { all: allPatents.length };
+  catNames.forEach(c => {
+    counts[c] = allPatents.filter(p => p.c === c).length;
+  });
+
+  let html = '<div class="stat-item active" data-cat="智" onclick="selectStat(\'智\')">'
+    + '<div class="num" style="color:#3182ce">' + counts['智'] + '</div>'
+    + '<div class="label">智类专利总数</div></div>';
+  bar.innerHTML = html;
+}
+
+function selectStat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.stat-item').forEach(el => el.classList.remove('active'));
+  document.querySelector('.stat-item[data-cat="' + cat + '"]').classList.add('active');
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  const tab = document.querySelector('.tab[data-cat="' + cat + '"]');
+  if (tab) tab.classList.add('active');
+  applyFilters();
+}
+
+// ---- Tabs ----
+document.getElementById('tabBar').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('tab')) return;
+  currentCat = e.target.dataset.cat;
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  e.target.classList.add('active');
+  document.querySelectorAll('.stat-item').forEach(el => el.classList.remove('active'));
+  const si = document.querySelector('.stat-item[data-cat="' + currentCat + '"]');
+  if (si) si.classList.add('active');
+  applyFilters();
+});
+
+// ---- Search ----
+document.getElementById('searchInput').addEventListener('input', function() {
+  currentSearch = this.value.trim().toLowerCase();
+  applyFilters();
+});
+
+// ---- Filter ----
+function applyFilters() {
+  let list = allPatents;
+  if (currentCat !== 'all') {
+    list = list.filter(p => p.c === currentCat);
+  }
+  if (currentSearch) {
+    const q = currentSearch;
+    list = list
+      .filter(p =>
+        p.n.toLowerCase().includes(q) ||
+        p.u.toLowerCase().includes(q) ||
+        (p.a && p.a.toLowerCase().includes(q))
+      )
+      .map(p => {
+        // Compute search relevance score
+        var s = 0;
+        var nl = p.n.toLowerCase();
+        var ul = p.u.toLowerCase();
+        var al = p.a ? p.a.toLowerCase() : '';
+        if (nl === q) s += 100;
+        else if (nl.startsWith(q)) s += 50;
+        else if (nl.includes(q)) s += 20;
+        if (al.includes(q)) s += 5;
+        if (ul.includes(q)) s += 2;
+        // Boost: count occurrences of each query word
+        var words = q.split(/\s+/);
+        words.forEach(function(w) {
+          if (!w) return;
+          s += (nl.split(w).length - 1) * 3;
+          s += (al.split(w).length - 1);
+        });
+        return { p: p, score: s };
+      })
+      .sort(function(a, b) { return b.score - a.score; })
+      .map(function(x) { return x.p; });
+  } else if (currentCat === 'all') {
+    // Round-robin by university for even distribution
+    var groups = {};
+    for (var i = 0; i < list.length; i++) {
+      var uni = list[i].u;
+      if (!groups[uni]) groups[uni] = [];
+      groups[uni].push(list[i]);
+    }
+    var unis = Object.keys(groups);
+    var maxLen = 0;
+    for (var j = 0; j < unis.length; j++) {
+      if (groups[unis[j]].length > maxLen) maxLen = groups[unis[j]].length;
+    }
+    var result = [];
+    for (var k = 0; k < maxLen; k++) {
+      for (var m = 0; m < unis.length; m++) {
+        if (k < groups[unis[m]].length) {
+          result.push(groups[unis[m]][k]);
+        }
+      }
+    }
+    list = result;
+  }
+  filteredPatents = list;
+  displayCount = 0;
+  document.getElementById('patentList').innerHTML = '';
+  document.getElementById('resultInfo').textContent = '共 ' + list.length + ' 条结果';
+  if (list.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('loadMore').style.display = 'none';
+  } else {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('loadMore').style.display = 'block';
+    loadMore();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- Render ----
+function loadMore() {
+  const start = displayCount;
+  const end = Math.min(start + PAGE_SIZE, filteredPatents.length);
+  const chunk = filteredPatents.slice(start, end);
+  const container = document.getElementById('patentList');
+
+  chunk.forEach((p, i) => {
+    var card = document.createElement('div');
+    card.className = 'patent-card cat-' + p.c;
+    card.setAttribute('data-idx', p._idx != null ? p._idx : '');
+    var absHtml;
+    if (p.a != null) {
+      absHtml = p.a ? '<p>' + escapeHtml(p.a) + '</p>' : '<p class="no-abstract">暂无摘要</p>';
+    } else {
+      absHtml = '<p class="no-abstract" style="color:#cbd5e0">摘要加载中...</p>';
+    }
+    card.innerHTML =
+      '<div class="patent-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
+        '<div class="patent-info">' +
+          '<div class="patent-title">' + escapeHtml(p.n) + '</div>' +
+          '<div class="patent-meta">' +
+            '<span>' + escapeHtml(p.u) + '</span>' +
+            '<span class="tag tag-' + p.c + '">' + p.c + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="expand-icon">&#9660;</div>' +
+      '</div>' +
+      '<div class="patent-abstract">' + absHtml + '</div>';
+    container.appendChild(card);
+  });
+
+  displayCount = end;
+  const btn = document.getElementById('loadMore');
+  if (displayCount >= filteredPatents.length) {
+    btn.style.display = 'none';
+  }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---- Back to top ----
+window.addEventListener('scroll', function() {
+  document.getElementById('backTop').style.display = window.scrollY > 500 ? 'block' : 'none';
+});
+</script>
+</body>
+</html>
